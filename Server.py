@@ -37,7 +37,7 @@ group5Messages = []
 group5Posters = []
 
 
-# Function that is the driver of the server program; It handles the commands
+# Function that is the driver of the server program; It handles the messages from client to server
 def handle_client(conn, addr):
     # Loop until a non-taken username is entered
     username_taken = True
@@ -82,7 +82,7 @@ def handle_client(conn, addr):
             print("Sending number of groups to " + client_message_list[1] + ".")
             num_groups = len(groupList)
             conn.send(str(num_groups).encode())
-            print("Sending list of of groups to " + client_message_list[1] + "." + '\n')
+            print("Sending list of groups to " + client_message_list[1] + "." + '\n')
             for group_name in groupList:
                 conn.send(group_name.encode())
                 time.sleep(0.00005)
@@ -137,12 +137,142 @@ def handle_client(conn, addr):
                     conn.send("JOINED_GROUP".encode())
         # If client requests to leave group, leave group
         elif client_message_list[0] == "LEAVE_GROUP":
-            i = 0
+            print(client_message_list[2] + " requests to leave group " + client_message_list[1] + ".")
+            # Check to see if client is even in group and return a message
+            # Group 1 leave request
+            if client_message_list[1] == "1":
+                if client_message_list[2] in group1Users:
+                    group1Users.remove(client_message_list[2])
+                    print(client_message_list[2] + " has left group 1." + '\n')
+                    conn.send("LEFT_GROUP".encode())
+                else:
+                    print(client_message_list[2] + " was not in group 1." + '\n')
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 2 leave request
+            elif client_message_list[1] == "2":
+                if client_message_list[2] in group2Users:
+                    group2Users.remove(client_message_list[2])
+                    print(client_message_list[2] + " has left group 2." + '\n')
+                    conn.send("LEFT_GROUP".encode())
+                else:
+                    print(client_message_list[2] + " was not in group 2." + '\n')
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 3 leave request
+            elif client_message_list[1] == "3":
+                if client_message_list[2] in group3Users:
+                    group3Users.remove(client_message_list[2])
+                    print(client_message_list[2] + " has left group 3." + '\n')
+                    conn.send("LEFT_GROUP".encode())
+                else:
+                    print(client_message_list[2] + " was not in group 3." + '\n')
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 4 leave request
+            elif client_message_list[1] == "4":
+                if client_message_list[2] in group4Users:
+                    group4Users.remove(client_message_list[2])
+                    print(client_message_list[2] + " has left group 4." + '\n')
+                    conn.send("LEFT_GROUP".encode())
+                else:
+                    print(client_message_list[2] + " was not in group 4." + '\n')
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 5 leave request
+            elif client_message_list[1] == "5":
+                if client_message_list[2] in group5Users:
+                    group5Users.remove(client_message_list[2])
+                    print(client_message_list[2] + " has left group 5." + '\n')
+                    conn.send("LEFT_GROUP".encode())
+                else:
+                    print(client_message_list[2] + " was not in group 5." + '\n')
+                    conn.send("NOT_IN_GROUP".encode())
+        elif client_message_list[0] == "REQUEST_USERS":
+            print(client_message_list[2] + " requests the users of group " + client_message_list[1] + ".")
+            # Check to see if client is in group and return a message
+            # Group 1 users request
+            if client_message_list[1] == "1":
+                print(client_message_list[2] + " has requested a list of users in group 1. Checking to see if " + client_message_list[2] + "is in the group.")
+                if client_message_list[2] in group1Users:
+                    print(client_message_list[2] + " is in group 1. Sending list of users in group 1." + '\n')
+                    conn.send("FETCHING_USERS".encode())
+                    # Get number of users in group and send to client
+                    num_users = len(group1Users)
+                    conn.send(str(num_users).encode())
+                    time.sleep(0.5)
+                    for user in group1Users:
+                        conn.send(user.encode())
+                        time.sleep(0.00005)
+                else:
+                    print(client_message_list[2] + " is not in group 1. List of users in group 1 will not be sent to " + client_message_list[2] + ".\n")
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 2 users request
+            if client_message_list[1] == "2":
+                print(client_message_list[2] + " has requested a list of users in group 2. Checking to see if " + client_message_list[2] + "is in the group.")
+                if client_message_list[2] in group2Users:
+                    print(client_message_list[2] + " is in group 2. Sending list of users in group 2." + '\n')
+                    conn.send("FETCHING_USERS".encode())
+                    # Get number of users in group and send to client
+                    num_users = len(group2Users)
+                    conn.send(str(num_users).encode())
+                    time.sleep(0.5)
+                    for user in group2Users:
+                        conn.send(user.encode())
+                        time.sleep(0.00005)
+                else:
+                    print(client_message_list[2] + " is not in group 2. List of users in group 1 will not be sent to " + client_message_list[2] + ".\n")
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 3 users request
+            if client_message_list[1] == "3":
+                print(client_message_list[2] + " has requested a list of users in group 3. Checking to see if " + client_message_list[2] + "is in the group.")
+                if client_message_list[2] in group3Users:
+                    print(client_message_list[2] + " is in group 3. Sending list of users in group 3." + '\n')
+                    conn.send("FETCHING_USERS".encode())
+                    # Get number of users in group and send to client
+                    num_users = len(group3Users)
+                    conn.send(str(num_users).encode())
+                    time.sleep(0.5)
+                    for user in group3Users:
+                        conn.send(user.encode())
+                        time.sleep(0.00005)
+                else:
+                    print(client_message_list[2] + " is not in group 3. List of users in group 1 will not be sent to " + client_message_list[2] + ".\n")
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 4 users request
+            if client_message_list[1] == "4":
+                print(client_message_list[2] + " has requested a list of users in group 4. Checking to see if " + client_message_list[2] + "is in the group.")
+                if client_message_list[2] in group4Users:
+                    print(client_message_list[2] + " is in group 4. Sending list of users in group 4." + '\n')
+                    conn.send("FETCHING_USERS".encode())
+                    # Get number of users in group and send to client
+                    num_users = len(group4Users)
+                    conn.send(str(num_users).encode())
+                    time.sleep(0.5)
+                    for user in group4Users:
+                        conn.send(user.encode())
+                        time.sleep(0.00005)
+                else:
+                    print(client_message_list[2] + " is not in group 4. List of users in group 1 will not be sent to " + client_message_list[2] + ".\n")
+                    conn.send("NOT_IN_GROUP".encode())
+            # Group 5 users request
+            if client_message_list[1] == "5":
+                print(client_message_list[2] + " has requested a list of users in group 5. Checking to see if " + client_message_list[2] + "is in the group.")
+                if client_message_list[2] in group5Users:
+                    print(client_message_list[2] + " is in group 5. Sending list of users in group 5." + '\n')
+                    conn.send("FETCHING_USERS".encode())
+                    # Get number of users in group and send to client
+                    num_users = len(group5Users)
+                    conn.send(str(num_users).encode())
+                    time.sleep(0.5)
+                    for user in group5Users:
+                        conn.send(user.encode())
+                        time.sleep(0.00005)
+                else:
+                    print(client_message_list[2] + " is not in group 5. List of users in group 5 will not be sent to " + client_message_list[2] + ".\n")
+                    conn.send("NOT_IN_GROUP".encode())
         else:
             i = 0
 
     # Close connection at end of thread
     print("Client disconnected:", addr)
+    print(" ")
     conn.close()
 
 

@@ -130,10 +130,47 @@ def main():
                     print("Successfully joined group " + command_list[1] + "." + '\n')
                 if server_message == "ALREADY_JOINED_GROUP":
                     print("You are already in group " + command_list[1] + "." + '\n')
+            # Invalid group IDs
             else:
-                print("Couldn't join group. Invalid group number.")
+                print("Couldn't join group. Invalid group ID was entered." + "\n")
+        elif command_list[0] == "%groupleave":
+            # Valid group IDs
+            if command_list[1] == "1" or command_list[1] == "2" or command_list[1] == "3" or command_list[1] == "4" or command_list[1] == "5":
+                print("Requesting to leave group " + command_list[1] + ".")
+                client_socket.send(("LEAVE_GROUP " + command_list[1] + " " + username).encode())
+                server_message = client_socket.recv(1024).decode()
+                if server_message == "LEFT_GROUP":
+                    print("Successfully left group " + command_list[1] + "." + '\n')
+                if server_message == "NOT_IN_GROUP":
+                    print("You are not in group " + command_list[1] + "." + '\n')
+            # Invalid group IDs
+            else:
+                print("Couldn't leave group. Invalid group ID was entered." + "\n")
+        elif command_list[0] == "%groupusers":
+            # Valid group IDs
+            if command_list[1] == "1" or command_list[1] == "2" or command_list[1] == "3" or command_list[1] == "4" or command_list[1] == "5":
+                print("Requesting to users of group " + command_list[1] + ".")
+                client_socket.send(("REQUEST_USERS " + command_list[1] + " " + username).encode())
+                server_message = client_socket.recv(1024).decode()
+                if server_message == "FETCHING_USERS":
+                    print("Group " + command_list[1] + " Users:")
+                    num_users = client_socket.recv(1024).decode()
+                    i = 1
+                    while i < (int(num_users) + 1):
+                        user = client_socket.recv(1024).decode()
+                        print(str(i) + " - " + user)
+                        i = i + 1
+                    print("")
+                if server_message == "NOT_IN_GROUP":
+                    print("You must join group " + command_list[1] + " before you can view users in the group." + '\n')
+            # Invalid group IDs
+            else:
+                print("Couldn't check users of group. Invalid group ID was entered." + "\n")
+        elif command_list[0] == "%grouppost":
+            r = 0
         else:
-            print("Invalid command.")
+            print("Invalid command." + "\n")
+
 
     # Close socket to end connection
     print("Client program is terminating. ")
